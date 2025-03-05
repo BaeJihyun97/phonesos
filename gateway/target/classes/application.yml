@@ -1,0 +1,100 @@
+server:
+  port: 8088
+
+---
+
+spring:
+  profiles: default
+  cloud:
+    gateway:
+#<<< API Gateway / Routes
+      routes:
+        - id: user
+          uri: http://localhost:8082
+          predicates:
+            - Path=/users/**, /devices/**, /userInfos/**, /deviceInfos/**
+        - id: lossreport
+          uri: http://localhost:8083
+          predicates:
+            - Path=/lostItemReports/**, 
+        - id: rental
+          uri: http://localhost:8084
+          predicates:
+            - Path=/deviceRentals/**, 
+        - id: insurance
+          uri: http://localhost:8085
+          predicates:
+            - Path=/insurances/**, 
+        - id: dashboard
+          uri: http://localhost:8086
+          predicates:
+            - Path=, /lostItemReportPages/**
+        - id: alarm
+          uri: http://localhost:8087
+          predicates:
+            - Path=/alarms/**, 
+        - id: frontend
+          uri: http://localhost:8080
+          predicates:
+            - Path=/**
+#>>> API Gateway / Routes
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+
+---
+
+spring:
+  profiles: docker
+  cloud:
+    gateway:
+      routes:
+        - id: user
+          uri: http://user:8080
+          predicates:
+            - Path=/users/**, /devices/**, 
+        - id: lossreport
+          uri: http://lossreport:8080
+          predicates:
+            - Path=/lostItemReports/**, 
+        - id: rental
+          uri: http://rental:8080
+          predicates:
+            - Path=/deviceRentals/**, 
+        - id: insurance
+          uri: http://insurance:8080
+          predicates:
+            - Path=/insurances/**, 
+        - id: dashboard
+          uri: http://dashboard:8080
+          predicates:
+            - Path=, 
+        - id: alarm
+          uri: http://alarm:8080
+          predicates:
+            - Path=/alarms/**, 
+        - id: frontend
+          uri: http://frontend:8080
+          predicates:
+            - Path=/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+server:
+  port: 8080
