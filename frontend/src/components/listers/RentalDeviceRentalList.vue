@@ -116,8 +116,8 @@
             this.newValue = {
                 'userId': 0,
                 'rentalDeviceId': 0,
-                'startDate': '2025-03-05',
-                'dueDate': '2025-03-05',
+                'startDate': '2025-03-06',
+                'dueDate': '2025-03-06',
                 'status': '',
             }
         },
