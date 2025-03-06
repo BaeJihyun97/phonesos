@@ -12,7 +12,7 @@ import phonesos.infra.AbstractEvent;
 public class Registered extends AbstractEvent {
 
     private Long id;
-    private Email email;
+    private String email;
     private String residentNumber;
 
     public Registered(User aggregate) {

@@ -24,55 +24,29 @@ public class Device  {
     
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-    
-    
-    
-    
     private Long id;
-    
-    
-    
-    
+
     private Long userId;
-    
-    
-    
-    
+
     private String imei;
-    
-    
-    
-    
+
     private String phoneNumber;
-    
-    
-    
-    
+
     private Long deviceId;
-    
-    
-    
+
     @Enumerated(EnumType.STRING)
     private Status status;
 
     @PostPersist
     public void onPostPersist(){
-
-
         DeviceRegistered deviceRegistered = new DeviceRegistered(this);
         deviceRegistered.publishAfterCommit();
-
-
 
         DeviceStateUpdated deviceStateUpdated = new DeviceStateUpdated(this);
         deviceStateUpdated.publishAfterCommit();
 
-
-
         DeviceDeleted deviceDeleted = new DeviceDeleted(this);
         deviceDeleted.publishAfterCommit();
-
-    
     }
 
     public static DeviceRepository repository(){
@@ -89,10 +63,10 @@ public class Device  {
         
 
         phonesos.external.DeviceQuery deviceQuery = new phonesos.external.DeviceQuery();
-        // deviceQuery.set??()        
-          = DeviceApplication.applicationContext
-            .getBean(phonesos.external.Service.class)
-            .device(deviceQuery);
+        // // deviceQuery.set??()        
+        //   = DeviceApplication.applicationContext
+        //     .getBean(phonesos.external.Service.class)
+        //     .device(deviceQuery);
 
         DeviceInfoUpdated deviceInfoUpdated = new DeviceInfoUpdated(this);
         deviceInfoUpdated.publishAfterCommit();
@@ -103,30 +77,16 @@ public class Device  {
     public static void deviceStateUpdate(LostItemReported lostItemReported){
         
         //implement business logic here:
-        
-        /** Example 1:  new item 
-        Device device = new Device();
-        repository().save(device);
-
-        DeviceStateUpdated deviceStateUpdated = new DeviceStateUpdated(device);
-        deviceStateUpdated.publishAfterCommit();
-        */
-
-        /** Example 2:  finding and process
-        
-
-        repository().findById(lostItemReported.get???()).ifPresent(device->{
+        repository().findById(Long.valueOf(lostItemReported.getDeviceId())).ifPresent(device->{
             
-            device // do something
+            // deactivate device state
+            device.setStatus(Status.deactivated);
             repository().save(device);
 
             DeviceStateUpdated deviceStateUpdated = new DeviceStateUpdated(device);
             deviceStateUpdated.publishAfterCommit();
 
          });
-        */
-
-        
     }
 //>>> Clean Arch / Port Method
 //<<< Clean Arch / Port Method

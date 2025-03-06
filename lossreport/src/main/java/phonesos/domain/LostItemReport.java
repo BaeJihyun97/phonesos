@@ -39,6 +39,17 @@ public class LostItemReport {
     public void report(ReportCommand reportCommand) {
         //implement business logic here:
 
+        this.createdAt = new Date();
+        this.status = Status.reported;
+
+        // Set the userId and deviceId from the reportCommand
+        this.userId = reportCommand.getUserId();
+        this.deviceId = reportCommand.getDeviceId();
+
+        // Save the entity or handle any further logic
+        repository().save(this);
+
+        // Publish the event
         LostItemReported lostItemReported = new LostItemReported(this);
         lostItemReported.publishAfterCommit();
     }
