@@ -12,15 +12,6 @@ public class DeviceHateoasProcessor
 
     @Override
     public EntityModel<Device> process(EntityModel<Device> model) {
-        model.add(
-            Link
-                .of(
-                    model.getRequiredLink("self").getHref() +
-                    "/deviceinfoupdate"
-                )
-                .withRel("deviceinfoupdate")
-        );
-
         return model;
     }
 }

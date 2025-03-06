@@ -73,6 +73,61 @@ public class LostItemReport {
         );
         lostItemLongTermLost.publishAfterCommit();
     }
+
+    //>>> Clean Arch / Port Method
+
+    //<<< Clean Arch / Port Method
+    public static void changeState(DeviceNotFound deviceNotFound) {
+        //implement business logic here:
+
+        /** Example 1:  new item 
+        LostItemReport lostItemReport = new LostItemReport();
+        repository().save(lostItemReport);
+
+        */
+
+        /** Example 2:  finding and process
+        
+
+        repository().findById(deviceNotFound.get???()).ifPresent(lostItemReport->{
+            
+            lostItemReport // do something
+            repository().save(lostItemReport);
+
+
+         });
+        */
+
+    }
+
+    //>>> Clean Arch / Port Method
+    //<<< Clean Arch / Port Method
+    public static void changeState(InsuranceClaimed insuranceClaimed) {
+        //implement business logic here:
+
+        /** Example 1:  new item 
+        LostItemReport lostItemReport = new LostItemReport();
+        repository().save(lostItemReport);
+
+        */
+
+        /** Example 2:  finding and process
+        
+        // if insuranceClaimed.insurerId exists, use it
+        
+        // ObjectMapper mapper = new ObjectMapper();
+        // Map<, Object> insuranceMap = mapper.convertValue(insuranceClaimed.getInsurerId(), Map.class);
+
+        repository().findById(insuranceClaimed.get???()).ifPresent(lostItemReport->{
+            
+            lostItemReport // do something
+            repository().save(lostItemReport);
+
+
+         });
+        */
+
+    }
     //>>> Clean Arch / Port Method
 
 }

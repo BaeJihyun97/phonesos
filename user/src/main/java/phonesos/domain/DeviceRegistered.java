@@ -17,7 +17,6 @@ public class DeviceRegistered extends AbstractEvent {
     private String phoneNumber;
     private Long deviceId;
     private Status status;
-    private Status status;
 
     public DeviceRegistered(Device aggregate) {
         super(aggregate);
