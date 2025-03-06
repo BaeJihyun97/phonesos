@@ -1,4 +1,4 @@
-package phonesos.domain;
+package phonesos.external;
 
 import java.util.*;
 import lombok.*;
@@ -12,6 +12,6 @@ public class LostItemReported extends AbstractEvent {
     private Long id;
     private Long userId;
     private Date createdAt;
-    private Object status;
+    private LIRStatus status;
     private Long deviceId;
 }

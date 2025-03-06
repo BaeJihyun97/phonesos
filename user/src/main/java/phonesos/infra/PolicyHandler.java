@@ -11,6 +11,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 import phonesos.config.kafka.KafkaProcessor;
 import phonesos.domain.*;
+import phonesos.external.LostItemReported;
 
 //<<< Clean Arch / Inbound Adaptor
 @Service
@@ -44,56 +45,56 @@ public class PolicyHandler {
         Device.deviceStateUpdate(event);
     }
 
-    @StreamListener(
-        value = KafkaProcessor.INPUT,
-        condition = "headers['type']=='LostItemResolved'"
-    )
-    public void wheneverLostItemResolved_DeviceStateUpdate(
-        @Payload LostItemResolved lostItemResolved
-    ) {
-        LostItemResolved event = lostItemResolved;
-        System.out.println(
-            "\n\n##### listener DeviceStateUpdate : " +
-            lostItemResolved +
-            "\n\n"
-        );
+    // @StreamListener(
+    //     value = KafkaProcessor.INPUT,
+    //     condition = "headers['type']=='LostItemResolved'"
+    // )
+    // public void wheneverLostItemResolved_DeviceStateUpdate(
+    //     @Payload LostItemResolved lostItemResolved
+    // ) {
+    //     LostItemResolved event = lostItemResolved;
+    //     System.out.println(
+    //         "\n\n##### listener DeviceStateUpdate : " +
+    //         lostItemResolved +
+    //         "\n\n"
+    //     );
 
-        // Sample Logic //
-        Device.deviceStateUpdate(event);
-    }
+    //     // Sample Logic //
+    //     Device.deviceStateUpdate(event);
+    // }
 
-    @StreamListener(
-        value = KafkaProcessor.INPUT,
-        condition = "headers['type']=='LostItemFound'"
-    )
-    public void wheneverLostItemFound_DeviceStateUpdate(
-        @Payload LostItemFound lostItemFound
-    ) {
-        LostItemFound event = lostItemFound;
-        System.out.println(
-            "\n\n##### listener DeviceStateUpdate : " + lostItemFound + "\n\n"
-        );
+    // @StreamListener(
+    //     value = KafkaProcessor.INPUT,
+    //     condition = "headers['type']=='LostItemFound'"
+    // )
+    // public void wheneverLostItemFound_DeviceStateUpdate(
+    //     @Payload LostItemFound lostItemFound
+    // ) {
+    //     LostItemFound event = lostItemFound;
+    //     System.out.println(
+    //         "\n\n##### listener DeviceStateUpdate : " + lostItemFound + "\n\n"
+    //     );
 
-        // Sample Logic //
-        Device.deviceStateUpdate(event);
-    }
+    //     // Sample Logic //
+    //     Device.deviceStateUpdate(event);
+    // }
 
-    @StreamListener(
-        value = KafkaProcessor.INPUT,
-        condition = "headers['type']=='LostItemLongTermLost'"
-    )
-    public void wheneverLostItemLongTermLost_DeviceStateUpdate(
-        @Payload LostItemLongTermLost lostItemLongTermLost
-    ) {
-        LostItemLongTermLost event = lostItemLongTermLost;
-        System.out.println(
-            "\n\n##### listener DeviceStateUpdate : " +
-            lostItemLongTermLost +
-            "\n\n"
-        );
+    // @StreamListener(
+    //     value = KafkaProcessor.INPUT,
+    //     condition = "headers['type']=='LostItemLongTermLost'"
+    // )
+    // public void wheneverLostItemLongTermLost_DeviceStateUpdate(
+    //     @Payload LostItemLongTermLost lostItemLongTermLost
+    // ) {
+    //     LostItemLongTermLost event = lostItemLongTermLost;
+    //     System.out.println(
+    //         "\n\n##### listener DeviceStateUpdate : " +
+    //         lostItemLongTermLost +
+    //         "\n\n"
+    //     );
 
-        // Sample Logic //
-        Device.deviceStateUpdate(event);
-    }
+    //     // Sample Logic //
+    //     Device.deviceStateUpdate(event);
+    // }
 }
 //>>> Clean Arch / Inbound Adaptor

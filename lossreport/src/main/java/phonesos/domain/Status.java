@@ -11,4 +11,5 @@ public enum Status {
     resolved,
     found,
     longTermLost,
+    canceled
 }

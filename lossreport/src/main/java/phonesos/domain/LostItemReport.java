@@ -39,6 +39,17 @@ public class LostItemReport {
     public void report(ReportCommand reportCommand) {
         //implement business logic here:
 
+        this.createdAt = new Date();
+        this.status = Status.reported;
+
+        // Set the userId and deviceId from the reportCommand
+        this.userId = reportCommand.getUserId();
+        this.deviceId = reportCommand.getDeviceId();
+
+        // Save the entity or handle any further logic
+        repository().save(this);
+
+        // Publish the event
         LostItemReported lostItemReported = new LostItemReported(this);
         lostItemReported.publishAfterCommit();
     }
@@ -79,25 +90,10 @@ public class LostItemReport {
     //<<< Clean Arch / Port Method
     public static void changeState(DeviceNotFound deviceNotFound) {
         //implement business logic here:
-
-        /** Example 1:  new item 
-        LostItemReport lostItemReport = new LostItemReport();
-        repository().save(lostItemReport);
-
-        */
-
-        /** Example 2:  finding and process
-        
-
-        repository().findById(deviceNotFound.get???()).ifPresent(lostItemReport->{
-            
-            lostItemReport // do something
+        repository().findById(deviceNotFound.getId()).ifPresent(lostItemReport->{
+            lostItemReport.setStatus(Status.canceled); // do something
             repository().save(lostItemReport);
-
-
          });
-        */
-
     }
 
     //>>> Clean Arch / Port Method
