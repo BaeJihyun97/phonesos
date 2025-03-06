@@ -47,21 +47,7 @@
                     text
                     @click="save"
                 >
-                    DeviceRegister
-                </v-btn>
-                <v-btn
-                    color="primary"
-                    text
-                    @click="save"
-                >
-                    DeviceInfoUpdate
-                </v-btn>
-                <v-btn
-                    color="primary"
-                    text
-                    @click="save"
-                >
-                    DeviceDelete
+                저장
                 </v-btn>
                 <v-btn
                     color="primary"
@@ -75,6 +61,42 @@
         </v-card-actions>
         <v-card-actions>
             <v-spacer></v-spacer>
+            <v-btn
+                v-if="!editMode"
+                color="primary"
+                text
+                @click="openDeviceRegister"
+            >
+                DeviceRegister
+            </v-btn>
+            <v-dialog v-model="deviceRegisterDiagram" width="500">
+                <DeviceRegisterCommand
+                    @closeDialog="closeDeviceRegister"
+                    @deviceRegister="deviceRegister"
+                ></DeviceRegisterCommand>
+            </v-dialog>
+            <v-btn
+                v-if="!editMode"
+                color="primary"
+                text
+                @click="openDeviceInfoUpdate"
+            >
+                DeviceInfoUpdate
+            </v-btn>
+            <v-dialog v-model="deviceInfoUpdateDiagram" width="500">
+                <DeviceInfoUpdateCommand
+                    @closeDialog="closeDeviceInfoUpdate"
+                    @deviceInfoUpdate="deviceInfoUpdate"
+                ></DeviceInfoUpdateCommand>
+            </v-dialog>
+            <v-btn
+                v-if="!editMode"
+                color="primary"
+                text
+                @click="deviceDelete"
+            >
+                DeviceDelete
+            </v-btn>
         </v-card-actions>
 
         <v-snackbar
@@ -112,6 +134,8 @@
                 timeout: 5000,
                 text: '',
             },
+            deviceRegisterDiagram: false,
+            deviceInfoUpdateDiagram: false,
         }),
 	async created() {
         },
@@ -208,6 +232,73 @@
             },
             change(){
                 this.$emit('input', this.value);
+            },
+            async deviceRegister() {
+                try {
+                    if(!this.offline){
+                        var temp = await axios.post(axios.fixUrl(this.value._links['/deviceregister'].href))
+                        for(var k in temp.data) this.value[k]=temp.data[k];
+                    }
+
+                    this.editMode = false;
+                    
+                    this.$emit('input', this.value);
+                    this.$emit('delete', this.value);
+                
+                } catch(e) {
+                    this.snackbar.status = true
+                    if(e.response && e.response.data.message) {
+                        this.snackbar.text = e.response.data.message
+                    } else {
+                        this.snackbar.text = e
+                    }
+                }
+            },
+            async deviceInfoUpdate(params) {
+                try {
+                    if(!this.offline) {
+                        var temp = await axios.put(axios.fixUrl(this.value._links['deviceinfoupdate'].href), params)
+                        for(var k in temp.data) {
+                            this.value[k]=temp.data[k];
+                        }
+                    }
+
+                    this.editMode = false;
+                    this.closeDeviceInfoUpdate();
+                } catch(e) {
+                    this.snackbar.status = true
+                    if(e.response && e.response.data.message) {
+                        this.snackbar.text = e.response.data.message
+                    } else {
+                        this.snackbar.text = e
+                    }
+                }
+            },
+            openDeviceInfoUpdate() {
+                this.deviceInfoUpdateDiagram = true;
+            },
+            closeDeviceInfoUpdate() {
+                this.deviceInfoUpdateDiagram = false;
+            },
+            async deviceDelete() {
+                try {
+                    if(!this.offline) {
+                        await axios.delete(axios.fixUrl(this.value._links['deviceDelete'].href))
+                    }
+
+                    this.editMode = false;
+                    this.isDelete = true;
+                    
+                    this.$emit('input', this.value);
+                    this.$emit('delete', this.value);
+                } catch(e) {
+                    this.snackbar.status = true
+                    if(e.response && e.response.data.message) {
+                        this.snackbar.text = e.response.data.message
+                    } else {
+                        this.snackbar.text = e
+                    }
+                }
             },
         },
     }
