@@ -1,9 +1,13 @@
 package phonesos.domain;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.LocalDate;
-import java.util.Date;
+import phonesos.domain.DeviceStateUpdated;
+import phonesos.domain.DeviceNotFound;
+import phonesos.UserApplication;
+import javax.persistence.*;
 import java.util.List;
+import lombok.Data;
+import java.util.Date;
+import java.time.LocalDate;
 import java.util.Map;
 import javax.persistence.*;
 import lombok.Data;
@@ -16,13 +20,16 @@ import phonesos.domain.DeviceStateUpdated;
 import phonesos.external.LostItemReported;
 
 @Entity
-@Table(name = "Device_table")
+@Table(name="Device_table")
 @Data
-//<<< DDD / Aggregate Root
-public class Device {
 
+//<<< DDD / Aggregate Root
+public class Device  {
+
+
+    
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 
     private Long userId;
@@ -123,12 +130,12 @@ public class Device {
          });
 
     }
-
-    //>>> Clean Arch / Port Method
-    //<<< Clean Arch / Port Method
-    public static void deviceStateUpdate(LostItemResolved lostItemResolved) {
+//>>> Clean Arch / Port Method
+//<<< Clean Arch / Port Method
+    public static void deviceStateUpdate(LostItemResolved lostItemResolved){
+        
         //implement business logic here:
-
+        
         /** Example 1:  new item 
         Device device = new Device();
         repository().save(device);
@@ -155,13 +162,14 @@ public class Device {
          });
         */
 
+        
     }
-
-    //>>> Clean Arch / Port Method
-    //<<< Clean Arch / Port Method
-    public static void deviceStateUpdate(LostItemFound lostItemFound) {
+//>>> Clean Arch / Port Method
+//<<< Clean Arch / Port Method
+    public static void deviceStateUpdate(LostItemFound lostItemFound){
+        
         //implement business logic here:
-
+        
         /** Example 1:  new item 
         Device device = new Device();
         repository().save(device);
@@ -188,15 +196,14 @@ public class Device {
          });
         */
 
+        
     }
-
-    //>>> Clean Arch / Port Method
-    //<<< Clean Arch / Port Method
-    public static void deviceStateUpdate(
-        LostItemLongTermLost lostItemLongTermLost
-    ) {
+//>>> Clean Arch / Port Method
+//<<< Clean Arch / Port Method
+    public static void deviceStateUpdate(LostItemLongTermLost lostItemLongTermLost){
+        
         //implement business logic here:
-
+        
         /** Example 1:  new item 
         Device device = new Device();
         repository().save(device);
@@ -223,8 +230,10 @@ public class Device {
          });
         */
 
+        
     }
-    //>>> Clean Arch / Port Method
+//>>> Clean Arch / Port Method
+
 
 }
 //>>> DDD / Aggregate Root

@@ -103,8 +103,8 @@
             me.newValue = {
                 'userId': 0,
                 'rentalDeviceId': 0,
-                'startDate': '2025-03-06',
-                'dueDate': '2025-03-06',
+                'startDate': '2025-03-07',
+                'dueDate': '2025-03-07',
                 'status': '',
             }
         },
