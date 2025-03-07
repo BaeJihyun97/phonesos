@@ -22,5 +22,37 @@ public class PolicyHandler {
 
     @StreamListener(KafkaProcessor.INPUT)
     public void whatever(@Payload String eventString) {}
+
+    @StreamListener(
+        value = KafkaProcessor.INPUT,
+        condition = "headers['type']=='DeviceNotFound'"
+    )
+    public void wheneverDeviceNotFound_ChangeState(
+        @Payload DeviceNotFound deviceNotFound
+    ) {
+        DeviceNotFound event = deviceNotFound;
+        System.out.println(
+            "\n\n##### listener ChangeState : " + deviceNotFound + "\n\n"
+        );
+
+        // Sample Logic //
+        LostItemReport.changeState(event);
+    }
+
+    @StreamListener(
+        value = KafkaProcessor.INPUT,
+        condition = "headers['type']=='InsuranceClaimed'"
+    )
+    public void wheneverInsuranceClaimed_ChangeState(
+        @Payload InsuranceClaimed insuranceClaimed
+    ) {
+        InsuranceClaimed event = insuranceClaimed;
+        System.out.println(
+            "\n\n##### listener ChangeState : " + insuranceClaimed + "\n\n"
+        );
+
+        // Sample Logic //
+        LostItemReport.changeState(event);
+    }
 }
 //>>> Clean Arch / Inbound Adaptor

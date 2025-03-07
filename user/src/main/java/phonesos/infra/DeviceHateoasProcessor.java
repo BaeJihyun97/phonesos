@@ -14,11 +14,21 @@ public class DeviceHateoasProcessor
     public EntityModel<Device> process(EntityModel<Device> model) {
         model.add(
             Link
+                .of(model.getRequiredLink("self").getHref() + "/deviceregister")
+                .withRel("deviceregister")
+        );
+        model.add(
+            Link
                 .of(
                     model.getRequiredLink("self").getHref() +
                     "/deviceinfoupdate"
                 )
                 .withRel("deviceinfoupdate")
+        );
+        model.add(
+            Link
+                .of(model.getRequiredLink("self").getHref() + "/devicedelete")
+                .withRel("devicedelete")
         );
 
         return model;

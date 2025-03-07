@@ -5,9 +5,8 @@ import java.util.*;
 import lombok.Data;
 
 @Data
-public class DeviceInfoUpdateCommand {
+public class DeviceRegisterCommand {
 
-    private Long id;
     private Long userId;
     private String imei;
     private String phoneNumber;

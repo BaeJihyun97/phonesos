@@ -1,8 +1,7 @@
 package phonesos.domain;
 
-import phonesos.domain.DeviceRegistered;
 import phonesos.domain.DeviceStateUpdated;
-import phonesos.domain.DeviceDeleted;
+import phonesos.domain.DeviceNotFound;
 import phonesos.UserApplication;
 import javax.persistence.*;
 import java.util.List;
@@ -10,8 +9,15 @@ import lombok.Data;
 import java.util.Date;
 import java.time.LocalDate;
 import java.util.Map;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import javax.persistence.*;
+import lombok.Data;
+import phonesos.UserApplication;
+import phonesos.domain.DeviceDeleted;
+import phonesos.domain.DeviceInfoUpdated;
+import phonesos.domain.DeviceNotFound;
+import phonesos.domain.DeviceRegistered;
+import phonesos.domain.DeviceStateUpdated;
+import phonesos.external.LostItemReported;
 
 @Entity
 @Table(name="Device_table")
@@ -32,61 +38,97 @@ public class Device  {
 
     private String phoneNumber;
 
-    private Long deviceId;
-
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @PostPersist
-    public void onPostPersist(){
-        DeviceRegistered deviceRegistered = new DeviceRegistered(this);
-        deviceRegistered.publishAfterCommit();
 
-        DeviceStateUpdated deviceStateUpdated = new DeviceStateUpdated(this);
-        deviceStateUpdated.publishAfterCommit();
-
-        DeviceDeleted deviceDeleted = new DeviceDeleted(this);
-        deviceDeleted.publishAfterCommit();
-    }
-
-    public static DeviceRepository repository(){
-        DeviceRepository deviceRepository = UserApplication.applicationContext.getBean(DeviceRepository.class);
+    public static DeviceRepository repository() {
+        DeviceRepository deviceRepository = UserApplication.applicationContext.getBean(
+            DeviceRepository.class
+        );
         return deviceRepository;
     }
 
 
-
 //<<< Clean Arch / Port Method
-    public void deviceInfoUpdate(){
+    public void deviceRegister(DeviceRegisterCommand deviceRegisterCommand){
         
         //implement business logic here:
+        this.userId = deviceRegisterCommand.getUserId();
+        this.imei = deviceRegisterCommand.getImei();
+        this.phoneNumber = deviceRegisterCommand.getPhoneNumber();
+        this.status = deviceRegisterCommand.getStatus();
+
+        repository().save(this);
+
+        DeviceRegistered deviceRegistered = new DeviceRegistered(this);
+        deviceRegistered.publishAfterCommit();
+    }
+//>>> Clean Arch / Port Method
+//<<< Clean Arch / Port Method
+    public void deviceInfoUpdate(DeviceInfoUpdateCommand deviceInfoUpdateCommand){
         
+        //implement business logic here:
+        repository()
+            .findById(deviceInfoUpdateCommand.getId())
+            .ifPresent(device -> {
+                if (deviceInfoUpdateCommand.getUserId() != null) {
+                    device.setUserId(deviceInfoUpdateCommand.getUserId());
+                }
+                if (deviceInfoUpdateCommand.getImei() != null) {
+                    device.setImei(deviceInfoUpdateCommand.getImei());
+                }
+                if (deviceInfoUpdateCommand.getPhoneNumber() != null) {
+                    device.setPhoneNumber(deviceInfoUpdateCommand.getPhoneNumber());
+                }
+                if (deviceInfoUpdateCommand.getStatus() != null) {
+                    device.setStatus(deviceInfoUpdateCommand.getStatus());
+                }
 
-        phonesos.external.DeviceQuery deviceQuery = new phonesos.external.DeviceQuery();
-        // // deviceQuery.set??()        
-        //   = DeviceApplication.applicationContext
-        //     .getBean(phonesos.external.Service.class)
-        //     .device(deviceQuery);
+                DeviceInfoUpdated deviceInfoUpdated = new DeviceInfoUpdated(this);
+                deviceInfoUpdated.publishAfterCommit();
+            });
+        
+    }
+//>>> Clean Arch / Port Method
+//<<< Clean Arch / Port Method
+    public void deviceDelete(){
+        
+        //implement business logic here:
+        repository()
+            .findById(this.id)
+            .ifPresent(device ->{
+                device.setStatus(Status.deleted);
 
-        DeviceInfoUpdated deviceInfoUpdated = new DeviceInfoUpdated(this);
-        deviceInfoUpdated.publishAfterCommit();
+                DeviceDeleted deviceDeleted = new DeviceDeleted(this);
+                deviceDeleted.publishAfterCommit();
+            });
+
     }
 //>>> Clean Arch / Port Method
 
-//<<< Clean Arch / Port Method
-    public static void deviceStateUpdate(LostItemReported lostItemReported){
-        
+    //<<< Clean Arch / Port Method
+    public static void deviceStateUpdate(LostItemReported lostItemReported) {
         //implement business logic here:
-        repository().findById(Long.valueOf(lostItemReported.getDeviceId())).ifPresent(device->{
+        repository()
+        .findById(Long.valueOf(lostItemReported.getDeviceId()))
+        .ifPresentOrElse(device->{
             
-            // deactivate device state
             device.setStatus(Status.deactivated);
             repository().save(device);
 
             DeviceStateUpdated deviceStateUpdated = new DeviceStateUpdated(device);
             deviceStateUpdated.publishAfterCommit();
-
+            System.out.println("\n\ndevice state updated after lostItemReported\n\n");
+         },  () -> {
+            DeviceNotFound deviceNotFound = new DeviceNotFound();
+            deviceNotFound.setId(lostItemReported.getId());
+            deviceNotFound.setUserId(lostItemReported.getUserId());
+            deviceNotFound.setDeviceId(lostItemReported.getDeviceId());
+            deviceNotFound.publishAfterCommit();
+            System.out.println("\n\ndevice Not found\n\n");
          });
+
     }
 //>>> Clean Arch / Port Method
 //<<< Clean Arch / Port Method
@@ -100,6 +142,8 @@ public class Device  {
 
         DeviceStateUpdated deviceStateUpdated = new DeviceStateUpdated(device);
         deviceStateUpdated.publishAfterCommit();
+        DeviceNotFound deviceNotFound = new DeviceNotFound(device);
+        deviceNotFound.publishAfterCommit();
         */
 
         /** Example 2:  finding and process
@@ -112,6 +156,8 @@ public class Device  {
 
             DeviceStateUpdated deviceStateUpdated = new DeviceStateUpdated(device);
             deviceStateUpdated.publishAfterCommit();
+            DeviceNotFound deviceNotFound = new DeviceNotFound(device);
+            deviceNotFound.publishAfterCommit();
 
          });
         */
@@ -130,6 +176,8 @@ public class Device  {
 
         DeviceStateUpdated deviceStateUpdated = new DeviceStateUpdated(device);
         deviceStateUpdated.publishAfterCommit();
+        DeviceNotFound deviceNotFound = new DeviceNotFound(device);
+        deviceNotFound.publishAfterCommit();
         */
 
         /** Example 2:  finding and process
@@ -142,6 +190,8 @@ public class Device  {
 
             DeviceStateUpdated deviceStateUpdated = new DeviceStateUpdated(device);
             deviceStateUpdated.publishAfterCommit();
+            DeviceNotFound deviceNotFound = new DeviceNotFound(device);
+            deviceNotFound.publishAfterCommit();
 
          });
         */
@@ -160,6 +210,8 @@ public class Device  {
 
         DeviceStateUpdated deviceStateUpdated = new DeviceStateUpdated(device);
         deviceStateUpdated.publishAfterCommit();
+        DeviceNotFound deviceNotFound = new DeviceNotFound(device);
+        deviceNotFound.publishAfterCommit();
         */
 
         /** Example 2:  finding and process
@@ -172,6 +224,8 @@ public class Device  {
 
             DeviceStateUpdated deviceStateUpdated = new DeviceStateUpdated(device);
             deviceStateUpdated.publishAfterCommit();
+            DeviceNotFound deviceNotFound = new DeviceNotFound(device);
+            deviceNotFound.publishAfterCommit();
 
          });
         */
