@@ -135,100 +135,48 @@ public class Device  {
     public static void deviceStateUpdate(LostItemResolved lostItemResolved){
         
         //implement business logic here:
-        
-        /** Example 1:  new item 
-        Device device = new Device();
-        repository().save(device);
+        repository().findById(lostItemResolved.getDeviceId())
+            .ifPresent(device->{
+                device.setStatus(Status.activated); // do something
+                repository().save(device);
 
-        DeviceStateUpdated deviceStateUpdated = new DeviceStateUpdated(device);
-        deviceStateUpdated.publishAfterCommit();
-        DeviceNotFound deviceNotFound = new DeviceNotFound(device);
-        deviceNotFound.publishAfterCommit();
-        */
-
-        /** Example 2:  finding and process
-        
-
-        repository().findById(lostItemResolved.get???()).ifPresent(device->{
-            
-            device // do something
-            repository().save(device);
-
-            DeviceStateUpdated deviceStateUpdated = new DeviceStateUpdated(device);
-            deviceStateUpdated.publishAfterCommit();
-            DeviceNotFound deviceNotFound = new DeviceNotFound(device);
-            deviceNotFound.publishAfterCommit();
-
-         });
-        */
-
-        
+                DeviceStateUpdated deviceStateUpdated = new DeviceStateUpdated(device);
+                deviceStateUpdated.publishAfterCommit();
+            }); 
     }
 //>>> Clean Arch / Port Method
-//<<< Clean Arch / Port Method
-    public static void deviceStateUpdate(LostItemFound lostItemFound){
+// //<<< Clean Arch / Port Method
+//     public static void deviceStateUpdate(LostItemFound lostItemFound){
         
-        //implement business logic here:
-        
-        /** Example 1:  new item 
-        Device device = new Device();
-        repository().save(device);
+//         //implement business logic here:
 
-        DeviceStateUpdated deviceStateUpdated = new DeviceStateUpdated(device);
-        deviceStateUpdated.publishAfterCommit();
-        DeviceNotFound deviceNotFound = new DeviceNotFound(device);
-        deviceNotFound.publishAfterCommit();
-        */
-
-        /** Example 2:  finding and process
-        
-
-        repository().findById(lostItemFound.get???()).ifPresent(device->{
+//         repository().findById(lostItemFound.get???()).ifPresent(device->{
             
-            device // do something
-            repository().save(device);
+//             device // do something
+//             repository().save(device);
 
-            DeviceStateUpdated deviceStateUpdated = new DeviceStateUpdated(device);
-            deviceStateUpdated.publishAfterCommit();
-            DeviceNotFound deviceNotFound = new DeviceNotFound(device);
-            deviceNotFound.publishAfterCommit();
+//             DeviceStateUpdated deviceStateUpdated = new DeviceStateUpdated(device);
+//             deviceStateUpdated.publishAfterCommit();
+//             DeviceNotFound deviceNotFound = new DeviceNotFound(device);
+//             deviceNotFound.publishAfterCommit();
 
-         });
-        */
+//          });
 
         
-    }
-//>>> Clean Arch / Port Method
+//     }
+// //>>> Clean Arch / Port Method
 //<<< Clean Arch / Port Method
     public static void deviceStateUpdate(LostItemLongTermLost lostItemLongTermLost){
         
         //implement business logic here:
-        
-        /** Example 1:  new item 
-        Device device = new Device();
-        repository().save(device);
-
-        DeviceStateUpdated deviceStateUpdated = new DeviceStateUpdated(device);
-        deviceStateUpdated.publishAfterCommit();
-        DeviceNotFound deviceNotFound = new DeviceNotFound(device);
-        deviceNotFound.publishAfterCommit();
-        */
-
-        /** Example 2:  finding and process
-        
-
-        repository().findById(lostItemLongTermLost.get???()).ifPresent(device->{
+        repository().findById(lostItemLongTermLost.getDeviceId()).ifPresent(device->{
             
-            device // do something
+            device.setStatus(Status.deleted); // do something
             repository().save(device);
 
             DeviceStateUpdated deviceStateUpdated = new DeviceStateUpdated(device);
             deviceStateUpdated.publishAfterCommit();
-            DeviceNotFound deviceNotFound = new DeviceNotFound(device);
-            deviceNotFound.publishAfterCommit();
-
          });
-        */
 
         
     }

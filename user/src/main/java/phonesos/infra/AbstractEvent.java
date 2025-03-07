@@ -11,6 +11,8 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.util.MimeTypeUtils;
 import phonesos.UserApplication;
 import phonesos.config.kafka.KafkaProcessor;
+import org.springframework.kafka.support.KafkaHeaders;
+
 
 //<<< Clean Arch / Outbound Adaptor
 public class AbstractEvent {
@@ -49,12 +51,45 @@ public class AbstractEvent {
         );
     }
 
+    public void publish(String messageKey) {
+        /**
+         * spring streams 방식
+         */
+        KafkaProcessor processor = UserApplication.applicationContext.getBean(
+            KafkaProcessor.class
+        );
+        MessageChannel outputChannel = processor.outboundTopic();
+ 
+        outputChannel.send(
+            MessageBuilder
+                .withPayload(this)
+                .setHeader(
+                    MessageHeaders.CONTENT_TYPE,
+                    MimeTypeUtils.APPLICATION_JSON
+                )
+                .setHeader("type", getEventType())
+                .setHeader(KafkaHeaders.MESSAGE_KEY, messageKey.getBytes())
+                .build()
+        );
+    }
+
     public void publishAfterCommit() {
         TransactionSynchronizationManager.registerSynchronization(
             new TransactionSynchronizationAdapter() {
                 @Override
                 public void afterCompletion(int status) {
                     AbstractEvent.this.publish();
+                }
+            }
+        );
+    }
+
+    public void publishAfterCommit(Long messageKey) {
+        TransactionSynchronizationManager.registerSynchronization(
+            new TransactionSynchronizationAdapter() {
+                @Override
+                public void afterCompletion(int status) {
+                    AbstractEvent.this.publish(String.valueOf(messageKey));
                 }
             }
         );

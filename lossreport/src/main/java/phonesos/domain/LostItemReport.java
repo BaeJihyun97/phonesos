@@ -58,6 +58,7 @@ public class LostItemReport {
     //<<< Clean Arch / Port Method
     public void resolve(ResolveCommand resolveCommand) {
         //implement business logic here:
+        this.status = Status.resolved;
 
         LostItemResolved lostItemResolved = new LostItemResolved(this);
         lostItemResolved.publishAfterCommit();
@@ -67,6 +68,7 @@ public class LostItemReport {
     //<<< Clean Arch / Port Method
     public void markItemFound(MarkItemFoundCommand markItemFoundCommand) {
         //implement business logic here:
+        this.status = Status.found;
 
         LostItemFound lostItemFound = new LostItemFound(this);
         lostItemFound.publishAfterCommit();
@@ -78,6 +80,7 @@ public class LostItemReport {
         MarkLongTermLostCommand markLongTermLostCommand
     ) {
         //implement business logic here:
+        this.status = Status.longTermLost;
 
         LostItemLongTermLost lostItemLongTermLost = new LostItemLongTermLost(
             this
@@ -93,6 +96,9 @@ public class LostItemReport {
         repository().findById(deviceNotFound.getId()).ifPresent(lostItemReport->{
             lostItemReport.setStatus(Status.canceled); // do something
             repository().save(lostItemReport);
+
+            StateChanged stateChanged = new StateChanged(lostItemReport);
+            stateChanged.publishAfterCommit();
          });
     }
 

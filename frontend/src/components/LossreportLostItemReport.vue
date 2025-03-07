@@ -19,7 +19,7 @@
             <Number label="UserId" v-model="value.userId" :editMode="editMode" :inputUI="''"/>
             <Number label="DeviceId" v-model="value.deviceId" :editMode="editMode" :inputUI="''"/>
             <Date label="CreatedAt" v-model="value.createdAt" :editMode="editMode" :inputUI="''"/>
-            <Status offline label="Status" v-model="value.status" :editMode="editMode" @change="change"/>
+            <LirStatus offline label="Status" v-model="value.status" :editMode="editMode" @change="change"/>
         </v-card-text>
 
         <v-card-actions style="background-color: white;">
@@ -197,7 +197,7 @@
 
                     if(!this.offline) {
                         if(this.isNew) {
-                            temp = await axios.post(axios.fixUrl('/lostItemReports'), this.value)
+                            temp = await axios.post(axios.fixUrl('/lostItemReports/report'), this.value)
                         } else {
                             temp = await axios.put(axios.fixUrl(this.value._links.self.href), this.value)
                         }

@@ -7,7 +7,7 @@
         <v-card-text>
             <Number label="Id" v-model="value.id" :editMode="editMode"/>
             <Number label="UserId" v-model="value.userId" :editMode="editMode"/>
-            <Status offline label="Status" v-model="value.status" :editMode="editMode" @change="change"/>
+            <LirStatus offline label="Status" v-model="value.status" :editMode="editMode" @change="change"/>
             <Date label="CreatedAt" v-model="value.createdAt" :editMode="editMode"/>
             <Number label="DeviceId" v-model="value.deviceId" :editMode="editMode"/>
         </v-card-text>

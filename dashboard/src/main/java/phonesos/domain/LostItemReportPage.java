@@ -13,7 +13,6 @@ import lombok.Data;
 public class LostItemReportPage {
 
     @Id
-    //@GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 
     private Long userId;

@@ -34,7 +34,7 @@ public class LostItemReportPageViewHandler {
             lostItemReportPage.setStatus(
                 String.valueOf(lostItemReported.getStatus())
             );
-            lostItemReportPage.set();
+            // lostItemReportPage.set();
             // view 레파지 토리에 save
             lostItemReportPageRepository.save(lostItemReportPage);
         } catch (Exception e) {
@@ -161,6 +161,35 @@ public class LostItemReportPageViewHandler {
                 );
                 // view 레파지 토리에 save
                 lostItemReportPageRepository.save(lostItemReportPage);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    //>>> DDD / CQRS
+
+    @StreamListener(KafkaProcessor.INPUT)
+    public void whenStateChanged_then_UPDATE_6(
+        @Payload StateChanged stateChanged
+    ) {
+        try {
+            if (!stateChanged.validate()) return;
+            // view 객체 조회
+            Optional<LostItemReportPage> lostItemReportPageOptional = lostItemReportPageRepository.findById(
+                stateChanged.getId()
+            );
+
+            if (lostItemReportPageOptional.isPresent()) {
+                LostItemReportPage lostItemReportPage = lostItemReportPageOptional.get();
+                // view 객체에 이벤트의 eventDirectValue 를 set 함
+                lostItemReportPage.setStatus(
+                    String.valueOf(stateChanged.getStatus())
+                );
+                // view 레파지 토리에 save
+                lostItemReportPageRepository.save(lostItemReportPage);
+            }
+            else {
+                System.out.println("\n\n\nID not found. Something Wrong!!!\n\n\n");
             }
         } catch (Exception e) {
             e.printStackTrace();
